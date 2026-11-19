@@ -7,43 +7,63 @@ import csv
 import sys
 
 
-def ler_vendas(caminho: str) -> list[dict]:
-    """Lê o CSV de vendas e devolve uma lista de dicionários, um por venda.
 
-    O módulo csv lê tudo como texto. As colunas quantidade e preco_unitario
-    têm de ser convertidas para int, senão as contas dão resultados errados.
-    """
-    # TODO 1: abre o ficheiro com open(caminho, encoding="utf-8") dentro de um with.
-    # TODO 2: percorre as linhas com csv.DictReader(ficheiro).
-    # TODO 3: converte linha["quantidade"] e linha["preco_unitario"] para int.
-    # TODO 4: junta cada linha a uma lista e devolve a lista no fim.
-    raise NotImplementedError("ler_vendas ainda não está feita")
+def ler_vendas(caminho: str) -> list[dict]:
+    """Lê o CSV e devolve uma lista de vendas."""
+
+    vendas = []
+
+    with open(caminho, encoding="utf-8") as ficheiro:
+        leitor = csv.DictReader(ficheiro)
+
+        for linha in leitor:
+            linha["quantidade"] = int(linha["quantidade"])
+            linha["preco_unitario"] = int(linha["preco_unitario"])
+
+            vendas.append(linha)
+
+    return vendas
 
 
 def total_venda(venda: dict) -> int:
-    """Valor de uma venda em escudos: quantidade vezes preço unitário."""
-    # TODO: devolve a quantidade vezes o preço unitário.
-    raise NotImplementedError("total_venda ainda não está feita")
+    resultado = venda["quantidade"] * venda["preco_unitario"]
+    return resultado
+
+#venda = {"quantidade": 3, "preco_unitario": 50}
+#valor = total_venda(venda)
+#print(valor)
 
 
 def faturacao_total(vendas: list[dict]) -> int:
-    """Soma do valor de todas as vendas."""
-    # TODO: começa com total = 0 e soma total_venda(venda) de cada venda.
-    raise NotImplementedError("faturacao_total ainda não está feita")
+    total = 0
+
+    for venda in vendas:
+        total += total_venda(venda)
+
+    return total
 
 
 def faturacao_por_ilha(vendas: list[dict]) -> dict[str, int]:
-    """Dicionário {ilha: faturação} com a soma das vendas de cada ilha."""
-    # TODO: cria um dicionário vazio e, para cada venda, soma total_venda(venda)
-    # na chave da ilha respetiva. Dica: por_ilha.get(ilha, 0) devolve 0 se a ilha ainda não existir.
-    raise NotImplementedError("faturacao_por_ilha ainda não está feita")
+    por_ilha = {}
+
+    for venda in vendas:
+        ilha = venda["ilha"]
+        valor = total_venda(venda)
+
+        por_ilha[ilha] = por_ilha.get(ilha, 0) + valor
+
+    return por_ilha
+
 
 
 def ilha_top(por_ilha: dict[str, int]) -> str:
-    """Nome da ilha com maior faturação."""
-    # TODO: devolve a chave com o maior valor. Dica: max(por_ilha, key=por_ilha.get).
-    raise NotImplementedError("ilha_top ainda não está feita")
+    return max(por_ilha, key=por_ilha.get)
 
+#por_ilha = {
+#    "Sal": 450,
+ #   "Santiago": 700,
+  #  "Fogo": 100
+#}
 
 # ---------------------------------------------------------------- Extensão (opcional)
 
